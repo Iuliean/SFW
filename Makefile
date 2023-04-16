@@ -17,6 +17,8 @@ export OUTPUT
 all: compile link
 
 compile:
+	mkdir -p $(OUTPUT)
+	mkdir -p $(INTERMEDIATES)
 	$(MAKE) -C src/
 
 
