@@ -14,10 +14,21 @@
 
 namespace iu
 {
+    /**
+     * @brief Base Server class from which AggregateServer and DistributedServer inherit
+     * 
+     */
     class Server
     {
     public:
-        
+
+        /**
+         * @brief Construct a new Server object
+         * 
+         * @param address address using dot notation. Eaxmple: 127.0.0.1
+         * @param port port on which the server binds to.
+         * @param maxConnections specifies the maximum amount of connections the server is allowed to handle (default: 40)
+         */
         Server(const std::string& address, uint16_t port, size_t maxConnections = 40);
         
         Server(const Server&) = delete;
@@ -40,7 +51,11 @@ namespace iu
         ThreadPool m_threadPool;
     };
 
-    //All connections gets the same instance of the Handler
+    /**
+     * @brief Creates a server object that uses the same(shared) Handler for all incoming connections 
+     * 
+     * @tparam HandlerT Object type used to handle the connection (must inherit from ServerConnectionHandler)
+     */
     template<std::derived_from<ServerConnectionHandler> HandlerT = DefaultConnectionHandler> 
     class AggregateServer : public Server
     {
@@ -60,8 +75,12 @@ namespace iu
     private:
         std::unique_ptr<ServerConnectionHandler> m_handler;
     };
-
-    //Each connection has it's own handler for it
+    
+    /**
+     * @brief Creates a server object where each connection gets a separate instance of the handler
+     * 
+     * @tparam HandlerT Object type used to handle the connection (must inherit from ServerConnectionHandler) 
+     */
     template<std::derived_from<ServerConnectionHandler> HandlerT = DefaultConnectionHandler>
     class DistributedServer : public Server
     {
