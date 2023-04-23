@@ -2,9 +2,11 @@
 #define SERVER_H
 #include <atomic>
 #include <bits/stdint-uintn.h>
+#include <condition_variable>
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include <mutex>
 #include <type_traits>
 
 #include "ServerConnectionHandler.h"
@@ -42,12 +44,16 @@ namespace iu
         void Run();
     private:
         virtual void Execute(Connection&&) = 0;
+    protected:
+        size_t m_maxConnections;
+        std::mutex m_mutexMaxConnections;
+        std::condition_variable m_cvMaxConnection;
+
     private:
         std::atomic_bool m_stop;
         uint16_t m_port;
         std::string m_address;
         Socket m_socket;
-        std::atomic_int m_maxConnections;
         ThreadPool m_threadPool;
     };
 
@@ -71,6 +77,11 @@ namespace iu
         {
             m_handler->OnConnected(connection);
             m_handler->HandleConnection(connection);
+            {
+                std::lock_guard l(m_mutexMaxConnections);
+                m_maxConnections++;
+                m_cvMaxConnection.notify_all();
+            }
         }
     private:
         std::unique_ptr<ServerConnectionHandler> m_handler;
@@ -96,6 +107,11 @@ namespace iu
             std::unique_ptr<ServerConnectionHandler> handler = std::make_unique<HandlerT>();
             handler->OnConnected(connection);
             handler->HandleConnection(connection);
+            {
+                std::lock_guard l(m_mutexMaxConnections);
+                m_maxConnections++;
+                m_cvMaxConnection.notify_all();
+            }
         }
     };
 }
