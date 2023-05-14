@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <exception>
 #include <thread>
 #include <iostream>
 
@@ -38,8 +39,13 @@ namespace iu
             m_taskQueue.pop();
 
             ul.unlock();
-
-            (*fn)();            
+            try{
+                (*fn)();            
+            }
+            catch(...)
+            {
+                std::cerr << "Exception\n";
+            }
         }
     }
 }

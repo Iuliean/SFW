@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include <set>
 #include <mutex>
 #include <type_traits>
 
@@ -42,15 +43,16 @@ namespace iu
         virtual ~Server();
 
         void Run();
+        virtual void Stop() = 0;
     private:
         virtual void Execute(Connection&&) = 0;
     protected:
         size_t m_maxConnections;
         std::mutex m_mutexMaxConnections;
         std::condition_variable m_cvMaxConnection;
+        std::atomic_bool m_stop;
 
     private:
-        std::atomic_bool m_stop;
         uint16_t m_port;
         std::string m_address;
         Socket m_socket;
@@ -72,6 +74,12 @@ namespace iu
             m_handler = std::make_unique<HandlerT>();
         }
         ~AggregateServer()override = default;
+
+        void Stop()override
+        {
+            m_stop = true;
+            m_handler->Stop();
+        }
     private:
         void Execute(Connection&& connection)override
         {
@@ -101,18 +109,31 @@ namespace iu
         {
         }
         ~DistributedServer()override = default;
+    
+        void Stop()override
+        {
+            std::lock_guard l(m_handlersMutex);
+            m_stop = true;
+            for(auto& handler : m_handlers)
+                handler->Stop();
+        }
     private:
         void Execute(Connection&& connection)override
         {
-            std::unique_ptr<ServerConnectionHandler> handler = std::make_unique<HandlerT>();
-            handler->OnConnected(connection);
-            handler->HandleConnection(connection);
+            const HandlerSet::iterator handler = m_handlers.insert(std::make_shared<HandlerT>()).first;
+            (*handler)->OnConnected(connection);
+            (*handler)->HandleConnection(connection);
             {
-                std::lock_guard l(m_mutexMaxConnections);
+                std::scoped_lock l(m_mutexMaxConnections, m_handlersMutex);
                 m_maxConnections++;
+                m_handlers.erase(handler);
                 m_cvMaxConnection.notify_all();
             }
         }
+    private:
+        using HandlerSet = std::set<std::shared_ptr<ServerConnectionHandler>>;
+        HandlerSet m_handlers;
+        std::mutex m_handlersMutex;
     };
 }
 

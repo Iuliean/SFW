@@ -1,5 +1,7 @@
 #include <arpa/inet.h>
+#include <cstdlib>
 #include <netinet/in.h>
+#include <sys/epoll.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -22,7 +24,23 @@ namespace iu
     Socket::Socket()
     {
         m_descriptor  = std::make_shared<SocketDescriptor>();
-        *m_descriptor = socket(AF_INET, SOCK_STREAM, 0); 
+        *m_descriptor = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0); 
+        m_epoll = epoll_create1(0);
+
+        if(m_epoll == -1)
+        {
+            std::cerr << "Failed to create epoll instance: " << utils::getErrorFromErrno() << '\n';
+            exit(1);
+        }    
+
+        m_epollEvent.events = EPOLLIN;
+        m_epollEvent.data.fd = (int)*m_descriptor;
+
+        if(epoll_ctl(m_epoll, EPOLL_CTL_ADD, (int)*m_descriptor, &m_epollEvent) == -1)
+        {
+            std::cerr << "Failed to add epoll event: " << utils::getErrorFromErrno() << '\n';
+            exit(1);
+        }
     }
 
     void Socket::Listen(const std::string& address, uint16_t port, int32_t queueSize)
@@ -38,13 +56,29 @@ namespace iu
     {
         sockaddr_in connDetails;
         socklen_t connLen = sizeof(connDetails);
-        int32_t connection = accept((int)*m_descriptor, (sockaddr*)&connDetails, &connLen); 
+        int32_t connection = accept((int)*m_descriptor, (sockaddr*)&connDetails, &connLen);
+        
         if( connection == -1)
         {
             std::cerr << "Failed to accept: " << utils::getErrorFromErrno() << '\n';
             exit(1);
         }
         return {connection, connDetails};
+    }
+
+    bool Socket::Poll(int timeout)
+    {
+        static constexpr int MAXEVENTS = 10;
+        epoll_event events[MAXEVENTS]; 
+        int numberOfFileDescriptors = epoll_wait(m_epoll, events, MAXEVENTS, timeout);
+        
+        if(numberOfFileDescriptors == -1 )
+        {
+            std::cerr << "epoll_wait failed: " << utils::getErrorFromErrno() << '\n';
+            exit(1);
+        }
+        else
+            return numberOfFileDescriptors;
     }
 
     Connection Socket::Connect(const std::string& address, uint16_t port)
