@@ -9,11 +9,15 @@
 #include <set>
 #include <mutex>
 #include <type_traits>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include "ServerConnectionHandler.h"
 #include "Connection.h"
 #include "ThreadPool.h"
 #include "Socket.h"
+#include "spdlog/common.h"
+#include "spdlog/spdlog.h"
+
 
 namespace iu
 {
@@ -32,7 +36,7 @@ namespace iu
          * @param port port on which the server binds to.
          * @param maxConnections specifies the maximum amount of connections the server is allowed to handle (default: 40)
          */
-        Server(const std::string& address, uint16_t port, size_t maxConnections = 40);
+        Server(const std::string& address, uint16_t port, size_t maxConnections = 40, const std::string& name= "Default");
         
         Server(const Server&) = delete;
         Server(Server&&) = delete;
@@ -44,10 +48,13 @@ namespace iu
 
         void Run();
         virtual void Stop() = 0;
+
+        void SetLogLevel(const spdlog::level::level_enum level)const;
     private:
         virtual void Execute(Connection&&) = 0;
     protected:
         size_t m_maxConnections;
+        std::shared_ptr<spdlog::logger> m_logger;
         std::mutex m_mutexMaxConnections;
         std::condition_variable m_cvMaxConnection;
         std::atomic_bool m_stop;
@@ -68,8 +75,8 @@ namespace iu
     class AggregateServer : public Server
     {
     public:
-        AggregateServer(const std::string address, uint16_t port, size_t maxConnections = 40)
-            : Server(address, port, maxConnections)
+        AggregateServer(const std::string address, uint16_t port, size_t maxConnections = 40, const std::string& name = "Default")
+            : Server(address, port, maxConnections, name)
         {
             m_handler = std::make_unique<HandlerT>();
         }
@@ -104,9 +111,10 @@ namespace iu
     class DistributedServer : public Server
     {
     public:
-        DistributedServer(const std::string& address, uint16_t port, size_t maxConnections = 40)
-            :Server(address, port, maxConnections)
+        DistributedServer(const std::string& address, uint16_t port, size_t maxConnections = 40, const std::string& name = "Default")
+            :Server(address, port, maxConnections, name)
         {
+
         }
         ~DistributedServer()override = default;
     
@@ -135,6 +143,11 @@ namespace iu
         HandlerSet m_handlers;
         std::mutex m_handlersMutex;
     };
-}
 
+    inline void Server::SetLogLevel(const spdlog::level::level_enum level)const
+    {
+        spdlog::set_level(level);
+    }
+
+}
 #endif //SERVER_H

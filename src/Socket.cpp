@@ -1,15 +1,20 @@
 #include <arpa/inet.h>
+#include <cmath>
 #include <cstdlib>
+#include <memory>
 #include <netinet/in.h>
 #include <sys/epoll.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include "Socket.h"
+#include "spdlog/fmt/bundled/core.h"
 #include "utils.h"
 
 namespace iu
 {
+    //to integrate with spdlog
     static void addressToSockaddr(sockaddr_in* out, const std::string& address, uint16_t port)
     {
         out->sin_family = AF_INET;
@@ -23,13 +28,14 @@ namespace iu
 
     Socket::Socket()
     {
+        m_logger = spdlog::stdout_color_mt("Socket");
         m_descriptor  = std::make_shared<SocketDescriptor>();
         *m_descriptor = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0); 
         m_epoll = epoll_create1(0);
 
         if(m_epoll == -1)
         {
-            std::cerr << "Failed to create epoll instance: " << utils::getErrorFromErrno() << '\n';
+            m_logger->error("Failed to create epoll instance: {}", utils::getErrorFromErrno());
             exit(1);
         }    
 
@@ -38,17 +44,18 @@ namespace iu
 
         if(epoll_ctl(m_epoll, EPOLL_CTL_ADD, (int)*m_descriptor, &m_epollEvent) == -1)
         {
-            std::cerr << "Failed to add epoll event: " << utils::getErrorFromErrno() << '\n';
+            m_logger->error("Failed to add epoll event: {}", utils::getErrorFromErrno());
             exit(1);
         }
     }
 
     void Socket::Listen(const std::string& address, uint16_t port, int32_t queueSize)
     {
+        m_logger->set_pattern(fmt::format("({}:{})", address, port));
         Bind(address, port);
         if(listen((int)*m_descriptor, queueSize) == -1)
         {
-            std::cerr << "Failed to listen reason: " << utils::getErrorFromErrno() << '\n';
+            m_logger->error("Failed to listen: {}",utils::getErrorFromErrno());
         }
     }
 
@@ -60,7 +67,7 @@ namespace iu
         
         if( connection == -1)
         {
-            std::cerr << "Failed to accept: " << utils::getErrorFromErrno() << '\n';
+            m_logger->error("Failed to accept: {}", utils::getErrorFromErrno());
             exit(1);
         }
         return {connection, connDetails};
@@ -74,7 +81,7 @@ namespace iu
         
         if(numberOfFileDescriptors == -1 )
         {
-            std::cerr << "epoll_wait failed: " << utils::getErrorFromErrno() << '\n';
+            m_logger->error("epoll_wait failed: {}", utils::getErrorFromErrno());
             exit(1);
         }
         else
@@ -102,7 +109,7 @@ namespace iu
 
         if(bind((int)*m_descriptor, (sockaddr*)& m_address, sizeof(m_address)) == -1)
         {
-            std::cerr << "Failed to bind descriptor: " << utils::getErrorFromErrno() << '\n';
+            m_logger->error("Failed to bind descriptor: {}", utils::getErrorFromErrno());
             exit(1);
         }
     }

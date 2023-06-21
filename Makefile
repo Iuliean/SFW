@@ -1,9 +1,14 @@
 CXX =g++
 CFLAGS =-g3 -Wall -Wpedantic -std=c++20
 LIBS=-lpthread
-INCLUDE=-I$(shell pwd)/include/
-INTERMEDIATES= $(shell pwd)/intermediate/
-OUTPUT = $(shell pwd)/build/ 
+WORKDIR=$(shell pwd)
+DEPENDENCIES=$(WORKDIR)/dependencies
+
+INCLUDE=-I$(WORKDIR)/include/ \
+		-I$(DEPENDENCIES)/spdlog/include
+
+INTERMEDIATES= $(WORKDIR)/intermediate/
+OUTPUT = $(WORKDIR)/build/ 
 
 export CFLAGS
 export LIBS

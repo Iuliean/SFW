@@ -1,10 +1,12 @@
 #ifndef SERVER_CONNECTION_HANDLER_H
 #define SERVER_CONNECTION_HANDLER_H
 #include <atomic>
+#include <memory>
 #include <thread>
 #include <chrono>
 
 #include "Connection.h"
+#include "spdlog/logger.h"
 namespace iu
 {
     class ServerConnectionHandler
@@ -20,13 +22,14 @@ namespace iu
     class DefaultConnectionHandler : public ServerConnectionHandler
     {
     public:
-        DefaultConnectionHandler() = default;
+        DefaultConnectionHandler();
         ~DefaultConnectionHandler()override = default;
         void OnConnected(Connection& connection)override;
         void HandleConnection(Connection& connection)override;
         void Stop()override;
     private:
         std::atomic_bool m_stop;
+        std::shared_ptr<spdlog::logger> m_logger;
     };
 }
 

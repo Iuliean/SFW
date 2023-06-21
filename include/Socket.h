@@ -31,6 +31,8 @@ namespace iu
         socklen_t m_addressLength;
         epoll_inst m_epoll;
         epoll_event m_epollEvent;
+
+        std::shared_ptr<spdlog::logger> m_logger;
     };
 }
 

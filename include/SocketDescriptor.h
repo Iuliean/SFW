@@ -1,6 +1,9 @@
 #ifndef SOCKETDESCRIPTOR_H
 #define SOCKETDESCRIPTOR_H
+#include "spdlog/common.h"
+#include "spdlog/logger.h"
 #include <cstdint>
+#include <memory>
 
 namespace iu
 {
@@ -18,6 +21,7 @@ namespace iu
         explicit operator int();
     private:
         int32_t m_socketDescriptor;
+        static std::shared_ptr<spdlog::logger> s_logger;
     };
 }
 #endif //SOCKETDESCRIPTOR_H

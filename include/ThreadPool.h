@@ -19,7 +19,7 @@ namespace iu
     class ThreadPool
     {
     public:
-        ThreadPool(size_t maxThreads);
+        ThreadPool(size_t maxThreads, const std::string& name= "TP");
         //stops all threads before destruction
         ~ThreadPool();
         template<typename T, typename ...Args>
@@ -34,6 +34,7 @@ namespace iu
         void threadEntry();    
 
     private:
+    std::shared_ptr<spdlog::logger> m_logger;
     std::atomic_bool m_stop;
     std::vector<std::thread> m_threads;
     std::mutex m_taskQueueMutex;

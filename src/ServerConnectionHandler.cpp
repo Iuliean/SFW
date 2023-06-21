@@ -3,13 +3,19 @@
 #include <vector>
 
 #include "ServerConnectionHandler.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
 
 namespace iu
 {
+    DefaultConnectionHandler::DefaultConnectionHandler()
+        : ServerConnectionHandler(),
+        m_logger(spdlog::stdout_color_mt("DefaultHandler"))
+    {
+    }
+
     void DefaultConnectionHandler::OnConnected(Connection &connection)
     {
-        std::cout << "Connected: " << connection.GetAdress() 
-                    << ":"<< connection.GetPort() << '\n'; 
+        m_logger->info("Connected to {}:{}", connection.GetAdress(), connection.GetPort());
     }
 
     void DefaultConnectionHandler::HandleConnection(Connection& connection)
