@@ -1,5 +1,5 @@
 CXX =g++
-CFLAGS =-g3 -Wall -Wpedantic -std=c++20
+CFLAGS =-g3 -Wall -Wpedantic -std=c++20 -fPIC
 LIBS=-lpthread
 WORKDIR=$(shell pwd)
 DEPENDENCIES=$(WORKDIR)/dependencies
@@ -28,7 +28,7 @@ compile:
 
 
 link:compile
-	$(CXX) -o build/sock $(shell ls $(INTERMEDIATES)*.o) $(CFLAGS) $(LIBS)
+	$(CXX) -shared -o build/libSFW.so $(shell ls $(INTERMEDIATES)*.o) $(CFLAGS) $(LIBS)
 
 clean:
 	rm -f intermediate/*

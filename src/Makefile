@@ -1,5 +1,4 @@
-SRC=main.cpp \
-	Socket.cpp \
+SRC=Socket.cpp \
 	Connection.cpp \
 	SocketDescriptor.cpp \
 	ThreadPool.cpp \
