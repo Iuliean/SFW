@@ -51,7 +51,7 @@ namespace iu
 
     void Socket::Listen(const std::string& address, uint16_t port, int32_t queueSize)
     {
-        m_logger->set_pattern(fmt::format("({}:{})", address, port));
+        m_logger->set_pattern(fmt::format("[%Y-%m-%d %T.%e][%n][%^%l%$]({}:{}): %v", address, port));
         Bind(address, port);
         if(listen((int)*m_descriptor, queueSize) == -1)
         {
