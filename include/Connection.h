@@ -11,6 +11,7 @@
 
 #include "utils.h"
 #include "SocketDescriptor.h"
+#include "Serializer.h"
 
 namespace iu
 {
@@ -26,7 +27,39 @@ namespace iu
         Connection& operator=(Connection&& other) = default;
 
         size_t SendAll(const std::vector<uint8_t>& data)const;
+
         size_t Send(const std::vector<uint8_t>& data, size_t count) const;
+        
+        template<Serializable T>
+        size_t Send(const std::vector<T>& objects) const
+        {
+            Serializer<T> s;
+            std::vector<uint8_t> send;
+            if constexpr(SizeSerializable<T>)
+            {
+                size_t sumSize = 0;
+                for(T& o : objects)
+                    sumSize += s.GetSize(o);
+                send.reserve(sumSize);
+            }
+            for(auto& obj : objects)
+                s.Serialize(send, obj);
+
+            return SendAll(send);
+        }
+
+        template<Serializable T>
+        size_t Send(const T& object)const
+        {
+            Serializer<T> s;
+            std::vector<uint8_t> send;
+            if constexpr(SizeSerializable<T>)
+            {
+                send.reserve(s.GetSize(object));
+            }
+            s.Serialize(send, object);
+            return SendAll(send);
+        }
 
         template<size_t N = 1024>
         size_t Receive(std::array<uint8_t, N>& data)const
@@ -35,7 +68,7 @@ namespace iu
             ssize_t received = recv((int)*m_descriptor, data.data(), N, 0);
             if(received == -1)
             {
-                std::cerr << "Failed to receive data: " << strerror(errno);
+                std::cerr << "Failed to receive data: " << utils::getErrorFromErrno();
                 exit(1);
             }
             return received;

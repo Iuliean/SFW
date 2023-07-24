@@ -1,4 +1,5 @@
 #include <arpa/inet.h>
+#include <cstddef>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
@@ -26,7 +27,6 @@ namespace iu
 
         return sent;
     }
-
     //private
 
     void Connection::ParseSockDetails(sockaddr_in& details)
