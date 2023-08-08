@@ -21,7 +21,6 @@ namespace iu
         explicit operator int();
     private:
         int32_t m_socketDescriptor;
-        static std::shared_ptr<spdlog::logger> s_logger;
     };
 }
 #endif //SOCKETDESCRIPTOR_H

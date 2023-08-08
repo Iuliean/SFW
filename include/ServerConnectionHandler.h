@@ -6,7 +6,7 @@
 #include <chrono>
 
 #include "Connection.h"
-#include "spdlog/logger.h"
+#include "Logger.h"
 namespace iu
 {
     class ServerConnectionHandler
@@ -29,7 +29,7 @@ namespace iu
         void Stop()override;
     private:
         std::atomic_bool m_stop;
-        std::shared_ptr<spdlog::logger> m_logger;
+        Logger m_logger;
     };
 }
 

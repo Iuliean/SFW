@@ -6,11 +6,9 @@
 
 #include "SocketDescriptor.h"
 #include "utils.h"
-
+#include "LoggerManager.h"
 namespace iu
 {
-    std::shared_ptr<spdlog::logger> SocketDescriptor::s_logger = spdlog::stdout_color_mt("SocketDescriptor");
-
     SocketDescriptor::SocketDescriptor(int32_t descriptor)
     {
         m_socketDescriptor = descriptor;
@@ -30,13 +28,13 @@ namespace iu
         {
             if(shutdown(m_socketDescriptor, SHUT_RDWR) == -1)
             {
-                s_logger->error("Failed to shutdown socket: {}", utils::getErrorFromErrno());
+                LoggerManager::GlobalLogger().error("Failed to shutdown socket: {}", utils::getErrorFromErrno());
                 return;
             }
 
             if (close(m_socketDescriptor) == -1)
             {
-                s_logger->error("Failed to close socket: {}", utils::getErrorFromErrno());
+                LoggerManager::GlobalLogger().error("Failed to close socket: {}", utils::getErrorFromErrno());
                 return;
             }
             

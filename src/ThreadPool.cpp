@@ -3,16 +3,15 @@
 #include <thread>
 #include <iostream>
 
+#include "LoggerManager.h"
 #include "ThreadPool.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 namespace iu
 {
     ThreadPool::ThreadPool(size_t maxThreads, const std::string& name)
-        :m_logger(spdlog::stdout_color_mt(name))
-    {
-        m_logger->set_pattern("[%Y-%m-%d %T.%e][%n][%^%l%$]{Thread: %t}: %v");
-        
+        :m_logger(LoggerManager::GetLogger("ThreadPool"))
+    {        
         m_threads.reserve(maxThreads);
         m_stop = false;
         for(size_t i = 0; i < maxThreads; i++)
@@ -44,14 +43,14 @@ namespace iu
 
             ul.unlock();
             try{
-                m_logger->debug("Starting Task");
+                m_logger.debug("Starting Task");
                 (*fn)();            
-                m_logger->debug("Task Stopped");
+                m_logger.debug("Task Stopped");
             }
             catch(...)
             {
-                m_logger->debug("Task Stopped");
-                m_logger->error("Exception thrown by task!!!!");
+                m_logger.debug("Task Stopped");
+                m_logger.error("Exception thrown by task!!!!");
             }
         }
     }

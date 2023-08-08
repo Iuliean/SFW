@@ -4,11 +4,13 @@
 #include <netinet/in.h>
 
 #include "Connection.h"
+#include "LoggerManager.h"
 #include "utils.h"
 
 namespace iu
 {
     Connection::Connection(int32_t descriptor, sockaddr_in& details)
+        : m_logger(LoggerManager::GetLogger("Connection"))
     {
         m_descriptor = std::make_shared<SocketDescriptor>(descriptor);
         ParseSockDetails(details);
@@ -21,7 +23,7 @@ namespace iu
         ssize_t sent = send((int)*m_descriptor, data.data(), count, 0);
         if(sent == -1)
         {
-            std::cerr << "Failed to send data: " << utils::getErrorFromErrno();
+            m_logger.error("Failed to send data:{}", utils::getErrorFromErrno());
             exit(1);
         }
 

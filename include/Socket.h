@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <sys/epoll.h>
 
+#include "Logger.h"
 #include "Connection.h"
 #include "SocketDescriptor.h"
 
@@ -32,7 +33,7 @@ namespace iu
         epoll_inst m_epoll;
         epoll_event m_epollEvent;
 
-        std::shared_ptr<spdlog::logger> m_logger;
+        Logger m_logger;
     };
 }
 

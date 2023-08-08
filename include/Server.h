@@ -11,6 +11,8 @@
 #include <type_traits>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
+#include "Logger.h"
+#include "LoggerManager.h"
 #include "ServerConnectionHandler.h"
 #include "Connection.h"
 #include "ThreadPool.h"
@@ -48,13 +50,11 @@ namespace iu
 
         void Run();
         virtual void Stop() = 0;
-
-        void SetLogLevel(const spdlog::level::level_enum level)const;
     private:
         virtual void Execute(Connection&&) = 0;
     protected:
+        Logger m_logger;
         size_t m_maxConnections;
-        std::shared_ptr<spdlog::logger> m_logger;
         std::mutex m_mutexMaxConnections;
         std::condition_variable m_cvMaxConnection;
         std::atomic_bool m_stop;
@@ -143,11 +143,6 @@ namespace iu
         HandlerSet m_handlers;
         std::mutex m_handlersMutex;
     };
-
-    inline void Server::SetLogLevel(const spdlog::level::level_enum level)const
-    {
-        spdlog::set_level(level);
-    }
 
 }
 #endif //SERVER_H

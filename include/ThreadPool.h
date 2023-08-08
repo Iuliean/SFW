@@ -11,6 +11,7 @@
 
 
 #include "Callback.h"
+#include "Logger.h"
 #include "Task.h"
 #include "Runnable.h"
 
@@ -34,7 +35,7 @@ namespace iu
         void threadEntry();    
 
     private:
-    std::shared_ptr<spdlog::logger> m_logger;
+    Logger m_logger;
     std::atomic_bool m_stop;
     std::vector<std::thread> m_threads;
     std::mutex m_taskQueueMutex;

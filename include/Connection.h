@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "utils.h"
+#include "Logger.h"
 #include "SocketDescriptor.h"
 #include "Serializer.h"
 
@@ -68,7 +69,7 @@ namespace iu
             ssize_t received = recv((int)*m_descriptor, data.data(), N, 0);
             if(received == -1)
             {
-                std::cerr << "Failed to receive data: " << utils::getErrorFromErrno();
+                m_logger.error("Failed to receive data: ", utils::getErrorFromErrno());
                 exit(1);
             }
             return received;
@@ -79,6 +80,7 @@ namespace iu
     private:
         void ParseSockDetails(sockaddr_in& details);
     private:
+        Logger m_logger;
         std::string m_address;
         std::uint16_t m_port;
         std::shared_ptr<SocketDescriptor> m_descriptor;
