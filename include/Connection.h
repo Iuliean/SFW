@@ -75,6 +75,18 @@ namespace iu
             return received;
         }
 
+        size_t Receive(std::vector<uint8_t>& data, size_t count)const
+        {
+            ASSERT((int)*m_descriptor > -1, "Socket not valid")
+            ssize_t received = recv((int)*m_descriptor, data.data(), count, 0);
+            if(received == -1)
+            {
+                m_logger.error("Failed to receive data: ", utils::getErrorFromErrno());
+                exit(1);
+            }
+            return received;
+        }
+
         std::string GetAdress()const;
         std::uint16_t GetPort()const;
     private:

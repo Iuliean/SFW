@@ -9,7 +9,6 @@
 #include <set>
 #include <mutex>
 #include <type_traits>
-#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include "Logger.h"
 #include "LoggerManager.h"
@@ -17,9 +16,6 @@
 #include "Connection.h"
 #include "ThreadPool.h"
 #include "Socket.h"
-#include "spdlog/common.h"
-#include "spdlog/spdlog.h"
-
 
 namespace iu
 {
