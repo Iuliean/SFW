@@ -6,7 +6,6 @@
 #include <netinet/in.h>
 #include <vector>
 #include <cstdint>
-#include <iostream>
 #include <string.h>
 
 #include "utils.h"
@@ -31,10 +30,10 @@ namespace iu
 
         size_t Send(const std::vector<uint8_t>& data, size_t count) const;
         
-        template<Serializable T>
-        size_t Send(const std::vector<T>& objects) const
+        template<typename T, template<typename> typename SerializerT = Serializer>
+        size_t Send(const std::vector<T>& objects) const requires Serializable<T, SerializerT>
         {
-            Serializer<T> s;
+            SerializerT<T> s;
             std::vector<uint8_t> send;
             if constexpr(SizeSerializable<T>)
             {
@@ -49,10 +48,10 @@ namespace iu
             return SendAll(send);
         }
 
-        template<Serializable T>
-        size_t Send(const T& object)const
+        template<typename T, template<typename> typename SerializerT = Serializer>
+        size_t Send(const T& object)const requires Serializable<T, SerializerT>
         {
-            Serializer<T> s;
+            SerializerT<T> s;
             std::vector<uint8_t> send;
             if constexpr(SizeSerializable<T>)
             {
