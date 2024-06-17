@@ -21,9 +21,7 @@ target_include_directories(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}-test
     PRIVATE ${PROJECT_SOURCE_DIR}/include/SFW)
 
-target_link_libraries(${PROJECT_NAME}
-    PRIVATE spdlog::spdlog_header_only)
+target_link_libraries(${PROJECT_NAME})
 
 target_link_libraries(${PROJECT_NAME}-test
-    PRIVATE ${PROJECT_NAME}
-    PRIVATE spdlog::spdlog_header_only)
+    PRIVATE ${PROJECT_NAME})

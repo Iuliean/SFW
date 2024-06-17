@@ -68,7 +68,7 @@ namespace iu
             ssize_t received = recv((int)*m_descriptor, data.data(), N, 0);
             if(received == -1)
             {
-                m_logger.error("Failed to receive data: ", utils::getErrorFromErrno());
+                m_logger.error("Failed to receive data: {}", utils::getErrorFromErrno());
                 exit(1);
             }
             return received;
@@ -80,7 +80,7 @@ namespace iu
             ssize_t received = recv((int)*m_descriptor, data.data(), count, 0);
             if(received == -1)
             {
-                m_logger.error("Failed to receive data: ", utils::getErrorFromErrno());
+                m_logger.error("Failed to receive data: {}", utils::getErrorFromErrno());
                 exit(1);
             }
             return received;

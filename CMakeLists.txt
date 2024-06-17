@@ -8,8 +8,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(SPDLOG_USE_STD_FORMAT ON)
 
-
-add_subdirectory(dependencies/spdlog)
+include_directories(dependencies/spdlog/include)
 add_subdirectory(src)
 
 add_library(SFW_EXPORT INTERFACE)
@@ -19,7 +18,6 @@ target_include_directories(SFW_EXPORT
     INTERFACE ${PROJECT_SOURCE_DIR}/include)
 
 target_link_libraries(SFW_EXPORT
-    INTERFACE spdlog::spdlog_header_only
     INTERFACE SFW)
 
 target_compile_features(SFW_EXPORT
