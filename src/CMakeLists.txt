@@ -11,9 +11,11 @@ add_library(${PROJECT_NAME} SHARED
 
 #includes main.cpp for when i want to test stuff 
 add_executable(${PROJECT_NAME}-test
-    main.cpp    
+    main.cpp
 )
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC SPDLOG_USE_STD_FORMAT)
+target_compile_definitions(${PROJECT_NAME}-test PUBLIC SPDLOG_USE_STD_FORMAT)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE     ${PROJECT_SOURCE_DIR}/include/SFW)
