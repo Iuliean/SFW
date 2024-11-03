@@ -11,12 +11,11 @@ namespace iu
 {
     ThreadPool::ThreadPool(size_t maxThreads, const std::string& name)
         :m_logger(LoggerManager::GetLogger("ThreadPool"))
-    {        
+    {
         m_threads.reserve(maxThreads);
         m_stop = false;
         for(size_t i = 0; i < maxThreads; i++)
             m_threads.emplace_back(&ThreadPool::threadEntry, this);
-    
     }
 
     ThreadPool::~ThreadPool()
@@ -44,7 +43,7 @@ namespace iu
             ul.unlock();
             try{
                 m_logger.debug("Starting Task");
-                (*fn)();            
+                (*fn)();
                 m_logger.debug("Task Stopped");
             }
             catch(...)

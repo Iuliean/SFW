@@ -30,25 +30,25 @@ namespace iu
         template<typename... Args>
         inline void debug(format_string_t<Args...> fmt, Args &&... args)const
         {
-            m_logger->debug(fmt, std::forward<Args>(args)...);
+            m_logger->debug(fmt, args...);
         }
 
         template<typename... Args>
         inline void info(format_string_t<Args...> fmt, Args &&... args)const
         {
-            m_logger->info(fmt, std::forward<Args>(args)...);
+            m_logger->info(fmt, args...);
         }
         
         template<typename... Args>
         inline void warn(format_string_t<Args...> fmt, Args &&... args)const
         {
-            m_logger->warn(fmt, std::forward<Args>(args)...);
+            m_logger->warn(fmt, args...);
         }
 
         template<typename... Args>
         inline void error(format_string_t<Args...> fmt, Args &&... args)const
         {
-            m_logger->error(fmt, std::forward<Args>(args)...);
+            m_logger->error(fmt, args...);
         }
 
     private:
