@@ -7,14 +7,8 @@ namespace iu
         std::string getErrorFromErrno()
         {
             char err[124];
-#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
-            strerror_r(errno, err, 124);
-            return {err, 124};
-#else
-            char* erp = nullptr;
-            erp = strerror_r(errno, err, 124);
-            return {erp};
-#endif
+            strerror_s(err, 124, errno);
+            return err;
         }
     }
 }

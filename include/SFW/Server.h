@@ -1,7 +1,6 @@
 #ifndef SERVER_H
 #define SERVER_H
 #include <atomic>
-#include <bits/stdint-uintn.h>
 #include <condition_variable>
 #include <cstddef>
 #include <cstdint>

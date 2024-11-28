@@ -1,7 +1,4 @@
-#include <arpa/inet.h>
 #include <cstddef>
-#include <sys/socket.h>
-#include <netinet/in.h>
 
 #include "Connection.h"
 #include "LoggerManager.h"

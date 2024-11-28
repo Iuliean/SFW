@@ -1,9 +1,7 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 #include <array>
-#include <bits/stdint-uintn.h>
 #include <memory>
-#include <netinet/in.h>
 #include <vector>
 #include <cstdint>
 #include <string.h>

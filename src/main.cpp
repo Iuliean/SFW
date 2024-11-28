@@ -7,7 +7,6 @@
 #include "ThreadPool.h"
 #include <cstdlib>
 #include <mutex>
-#include <pthread.h>
 #include <thread>
 
 class test

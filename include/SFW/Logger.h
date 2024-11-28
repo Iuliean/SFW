@@ -36,7 +36,8 @@ namespace iu
         template<typename... Args>
         inline void info(format_string_t<Args...> fmt, Args &&... args)const
         {
-            m_logger->info(fmt, args...);
+            #warning "remember to fix these
+           // m_logger->info(fmt, args...);
         }
         
         template<typename... Args>
@@ -48,7 +49,8 @@ namespace iu
         template<typename... Args>
         inline void error(format_string_t<Args...> fmt, Args &&... args)const
         {
-            m_logger->error(fmt, args...);
+            #warning "remember to fix these"
+            //m_logger->error(fmt, args...);
         }
 
     private:

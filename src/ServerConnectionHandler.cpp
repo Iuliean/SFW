@@ -1,5 +1,4 @@
 #include <array>
-#include <bits/stdint-uintn.h>
 #include <vector>
 
 #include "LoggerManager.h"
