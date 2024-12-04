@@ -2,9 +2,9 @@
 #define LOGGER_H
 #include "spdlog/common.h"
 #include "spdlog/logger.h"
-#include <map>
 #include <memory>
 #include <spdlog/sinks/sink.h>
+#include "utils.h"
 
 
 namespace iu
@@ -18,7 +18,7 @@ namespace iu
         ERROR   = spdlog::level::err
     };
 
-    class Logger
+    class SFW_API Logger
     {
     public:
         template<typename... Args>

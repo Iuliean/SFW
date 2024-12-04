@@ -7,22 +7,20 @@
 #include <memory>
 #include <set>
 #include <mutex>
-#include <type_traits>
 
 #include "Logger.h"
-#include "LoggerManager.h"
 #include "ServerConnectionHandler.h"
 #include "Connection.h"
 #include "ThreadPool.h"
+#include "utils.h"
 #include "Socket.h"
-
 namespace iu
 {
     /**
      * @brief Base Server class from which AggregateServer and DistributedServer inherit
      * 
      */
-    class Server
+    class SFW_API Server
     {
     public:
 
@@ -67,7 +65,7 @@ namespace iu
      * @tparam HandlerT Object type used to handle the connection (must inherit from ServerConnectionHandler)
      */
     template<std::derived_from<ServerConnectionHandler> HandlerT = DefaultConnectionHandler> 
-    class AggregateServer : public Server
+    class SFW_API AggregateServer : public Server
     {
     public:
         AggregateServer(const std::string address, uint16_t port, size_t maxConnections = 40, const std::string& name = "Default")
@@ -103,7 +101,7 @@ namespace iu
      * @tparam HandlerT Object type used to handle the connection (must inherit from ServerConnectionHandler) 
      */
     template<std::derived_from<ServerConnectionHandler> HandlerT = DefaultConnectionHandler>
-    class DistributedServer : public Server
+    class SFW_API DistributedServer : public Server
     {
     public:
         DistributedServer(const std::string& address, uint16_t port, size_t maxConnections = 40, const std::string& name = "Default")

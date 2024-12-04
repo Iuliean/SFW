@@ -1,15 +1,13 @@
 #ifndef LOGGER_MANAGER_H
 #define LOGGER_MANAGER_H
 #include <memory>
-#include <map>
-#include <concepts>
 #include "spdlog/common.h"
 
 #include "Logger.h"
 
 namespace iu
 {
-    class LoggerManager
+    class SFW_API LoggerManager
     {
     public:
         static void Init();

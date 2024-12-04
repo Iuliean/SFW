@@ -9,9 +9,14 @@ set(SFW_SRC_FILES "Connection.cpp"
 )
 
 if (WIN32)
-    set(APPEND SFW_SRC_FILES "platform/win32/Socket.cpp" "platform/win32/SocketDescriptor.cpp")
+    set(SFW_SRC_FILES "${SFW_SRC_FILES}"
+                      "platform/win32/Socket.cpp"
+                      "platform/win32/SocketDescriptor.cpp"
+                      "platform/win32/WinSockInstance.cpp")
 else()
-    set(APPEND SFW_SRC_FILES "platform/posix/Socket.cpp" "platform/posix/SocketDescriptor.cpp")
+    set(SFW_SRC_FILES "${SFW_SRC_FILES}"
+                      "platform/posix/Socket.cpp"
+                      "platform/posix/SocketDescriptor.cpp")
 endif()
 
 
@@ -30,8 +35,14 @@ target_include_directories(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}-test
     PRIVATE ${PROJECT_SOURCE_DIR}/include/SFW)
+if (WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE)
 
-target_link_libraries(${PROJECT_NAME})
-
-target_link_libraries(${PROJECT_NAME}-test
-    PRIVATE ${PROJECT_NAME})
+    target_link_libraries(${PROJECT_NAME}-test
+        PRIVATE ${PROJECT_NAME})
+else()
+    target_link_libraries(${PROJECT_NAME} PRIVATE )
+    
+    target_link_libraries(${PROJECT_NAME}-test
+        PRIVATE ${PROJECT_NAME})
+endif()
