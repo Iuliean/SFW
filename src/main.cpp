@@ -2,6 +2,7 @@
 #include "Server.h"
 #include "ServerConnectionHandler.h"
 #include "Socket.h"
+#include "LoggerManager.h"
 #include "Task.h"
 #include "Callback.h"
 #include "ThreadPool.h"
@@ -41,8 +42,8 @@ int main()
     //1. decide if a packet parser is needed and decide architecture
     //2. maby constexpr handling of blocking or nonblocking sockets (?)
     //5. figure out how to stop handlers with infinite loops
-
-    iu::DistributedServer server("0.0.0.0", 4000, 2);
+    iu::LoggerManager::Init();
+    iu::DistributedServer server("127.0.0.1", 12345, 2);
 
     std::thread t([&server](){server.Run();});
 

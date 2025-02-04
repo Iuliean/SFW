@@ -6,6 +6,8 @@
 #include <cstdint>
 #include <string.h>
 
+#include "platform/win32/Socket.h"
+#include "platform/win32/SocketDescriptor.h"
 #include "utils.h"
 #include "Logger.h"
 #include "Serializer.h"
@@ -24,12 +26,12 @@ namespace iu
         Connection(Connection&& other) = default;
         Connection& operator=(Connection&& other) = default;
 
-        size_t SendAll(const std::vector<uint8_t>& data)const { return Send(data, data.size()); }
+        size_t Send(std::span<const std::uint8_t> data) const { return Send(data, data.size()); }
 
-        size_t Send(const std::vector<uint8_t>& data, size_t count)const
+        size_t Send(std::span<const std::uint8_t> data, size_t count)const
         {
             ASSERT(m_descriptor, "Socket not valid");
-            return m_descriptor->Send({data.begin(), count});
+            return m_descriptor->Send(data.subspan(0, count));
         }
         
         template<typename T, template<typename> typename SerializerT = Serializer>
@@ -47,7 +49,7 @@ namespace iu
             for(auto& obj : objects)
                 s.Serialize(send, obj);
 
-            return SendAll(send);
+            return Send(send);
         }
 
         template<typename T, template<typename> typename SerializerT = Serializer>
@@ -60,20 +62,13 @@ namespace iu
                 send.reserve(s.GetSize(object));
             }
             s.Serialize(send, object);
-            return SendAll(send);
+            return Send(send);
         }
 
-        template<size_t N = 1024>
-        size_t Receive(std::array<uint8_t, N>& data)const
+        size_t Receive(std::span<std::uint8_t> data)const
         {
             ASSERT(*m_descriptor, "Socket not valid");
             return m_descriptor->Receive(data);
-        }
-
-        size_t Receive(std::vector<uint8_t>& data, size_t count)const
-        {
-            ASSERT(*m_descriptor, "Socket not valid");
-            return m_descriptor->Receive({data.begin(), count});
         }
 
         std::string GetAdress() const { return m_address; }

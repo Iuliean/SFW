@@ -15,7 +15,8 @@ namespace iu
 
     void DefaultConnectionHandler::OnConnected(Connection &connection)
     {
-        m_logger.info("Connected to {}:{}", connection.GetAdress(), connection.GetPort());
+        //m_logger.info("Connected to {}:{}", connection.GetAdress(), connection.GetPort());
+        std::cout << "Connected\n";
     }
 
     void DefaultConnectionHandler::HandleConnection(Connection& connection)

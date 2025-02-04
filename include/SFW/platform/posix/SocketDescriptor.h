@@ -1,9 +1,6 @@
 #ifndef SOCKET_DESCRIPTOR_PLATFORM_H
 #define SOCKET_DESCRIPTOR_PLATFORM_H
-#include "spdlog/common.h"
-#include "spdlog/logger.h"
 #include <cstdint>
-#include <memory>
 
 namespace iu
 {

@@ -1,15 +1,17 @@
 #ifndef SOCKET_PLATFORM_H
 #define SOCKET_PLATFORM_H
 
+#include <cstdint>
 #include <string>
 
 #include "Logger.h"
 #include "SocketDescriptor.h"
+#include "WinSockInstance.hpp"
 
 namespace iu
 {
     class Connection;
-    class Socket
+    class SFW_API Socket
     {
     public:
         Socket();
@@ -17,18 +19,21 @@ namespace iu
         
         [[nodiscard("All connections need to be handled")]]
         Connection Accept();
+        
+        void Connect(const std::string& address, uint16_t port);
+
         bool Poll(int timeout = -1);
 
-        static Connection Connect(const std::string& address, uint16_t port);
     private:
-        using epoll_inst = int;
         
         void Bind(const std::string& address, uint16_t port);
         
+        WinSockInstance m_wsaInstance;
+ 
         std::shared_ptr<SocketDescriptor> m_descriptor;
 
-
-        Logger m_logger;
+        //to be removed and revamp logging
+        Logger m_logger; 
     };
 }
 

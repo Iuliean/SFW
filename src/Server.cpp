@@ -20,6 +20,7 @@ namespace iu
         m_socket(),
         m_threadPool(30)
     {
+        
     }
 
     Server::~Server()
@@ -52,6 +53,7 @@ namespace iu
                 m_threadPool.AddTask(executor, m_socket.Accept());
                 m_maxConnections--;
             }
+            std::this_thread::sleep_for(std::chrono::seconds(3));
         }
     }
 }

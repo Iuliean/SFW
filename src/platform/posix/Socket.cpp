@@ -1,3 +1,4 @@
+#include <winsock2.h>
 #include <arpa/inet.h>
 #include <cmath>
 #include <cstdlib>
