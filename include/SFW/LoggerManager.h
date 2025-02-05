@@ -29,9 +29,9 @@ namespace iu
 
 #define SFW_LOGGER(DOM) iu::LoggerManager::GetLogger(DOM)
 
-#define SFW_LOG_DEBUG(DOM, FMT,...) {SFW_LOGGER(DOM)->debug(FMT, __VA_ARGS__);}
-#define SFW_LOG_INFO(DOM, FMT,...) {SFW_LOGGER(DOM)->info(FMT, __VA_ARGS__);}
-#define SFW_LOG_WARN(DOM, FMT,...) {SFW_LOGGER(DOM)->warn(FMT, __VA_ARGS__);}
-#define SFW_LOG_ERROR(DOM, FMT,...) {SFW_LOGGER(DOM)->error(FMT, __VA_ARGS__);}
+#define SFW_LOG_DEBUG(DOM, FMT,...) {SFW_LOGGER(DOM)->debug(FMT, ##__VA_ARGS__);}
+#define SFW_LOG_INFO(DOM, FMT,...) {SFW_LOGGER(DOM)->info(FMT, ##__VA_ARGS__);}
+#define SFW_LOG_WARN(DOM, FMT,...) {SFW_LOGGER(DOM)->warn(FMT, ##__VA_ARGS__);}
+#define SFW_LOG_ERROR(DOM, FMT,...) {SFW_LOGGER(DOM)->error(FMT, ##__VA_ARGS__);}
 
 #endif //LOGGER_MANAGER_H

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.27.7)
+cmake_minimum_required(VERSION 3.18.4)
 
 project(SFW VERSION 0.1)
 

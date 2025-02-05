@@ -2,12 +2,12 @@
 #define CONNECTION_H
 #include <array>
 #include <memory>
+#include <span>
 #include <vector>
 #include <cstdint>
 #include <string.h>
 
-#include "platform/win32/Socket.h"
-#include "platform/win32/SocketDescriptor.h"
+#include "Socket.h"
 #include "utils.h"
 #include "Serializer.h"
 #include "SocketDescriptor.h"

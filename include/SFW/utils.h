@@ -12,7 +12,7 @@
         #define SFW_API __declspec(dllimport)
     #endif
 #else
-    #define SFW_EXPORT 
+    #define SFW_API 
 #endif
 
 namespace iu

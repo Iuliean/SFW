@@ -9,6 +9,7 @@
 #include "LoggerManager.h"
 namespace iu
 {
+    constexpr auto DOM = "SocketDescriptor";
     SocketDescriptor::SocketDescriptor(int32_t descriptor)
     {
         m_socketDescriptor = descriptor;
@@ -28,13 +29,13 @@ namespace iu
         {
             if(shutdown(m_socketDescriptor, SHUT_RDWR) == -1)
             {
-                LoggerManager::GlobalLogger().error("Failed to shutdown socket: {}", utils::getErrorFromErrno());
+                SFW_LOG_ERROR(DOM, "Failed to shutdown socket: {}", utils::getErrorFromErrno());
                 return;
             }
 
             if (close(m_socketDescriptor) == -1)
             {
-                LoggerManager::GlobalLogger().error("Failed to close socket: {}", utils::getErrorFromErrno());
+                SFW_LOG_ERROR(DOM, "Failed to close socket: {}", utils::getErrorFromErrno());
                 return;
             }
             
