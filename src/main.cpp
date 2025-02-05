@@ -42,7 +42,7 @@ int main()
     //1. decide if a packet parser is needed and decide architecture
     //2. maby constexpr handling of blocking or nonblocking sockets (?)
     //5. figure out how to stop handlers with infinite loops
-    iu::LoggerManager::Init();
+    iu::LoggerManager::LogToConsole();
     iu::DistributedServer server("127.0.0.1", 12345, 2);
 
     std::thread t([&server](){server.Run();});

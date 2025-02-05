@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <string>
 
-#include "Logger.h"
 #include "SocketDescriptor.h"
 #include "WinSockInstance.hpp"
 
@@ -31,9 +30,6 @@ namespace iu
         WinSockInstance m_wsaInstance;
  
         std::shared_ptr<SocketDescriptor> m_descriptor;
-
-        //to be removed and revamp logging
-        Logger m_logger; 
     };
 }
 

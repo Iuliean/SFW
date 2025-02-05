@@ -12,8 +12,7 @@ namespace iu
     using epoll_inst = int;
 
     Server::Server(const std::string& address, uint16_t port, size_t maxConnections, const std::string& name)
-        : m_logger(LoggerManager::GetLogger("Server")),
-        m_maxConnections(maxConnections),  
+        :m_maxConnections(maxConnections),  
         m_stop(false),
         m_port(port),
         m_address(address),
@@ -53,7 +52,6 @@ namespace iu
                 m_threadPool.AddTask(executor, m_socket.Accept());
                 m_maxConnections--;
             }
-            std::this_thread::sleep_for(std::chrono::seconds(3));
         }
     }
 }

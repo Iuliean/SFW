@@ -11,15 +11,15 @@
 
 namespace iu
 {
+    constexpr auto DOM = "Socket";
     Socket::Socket()
-        : m_logger(LoggerManager::GetLogger("Socket")),
-          m_wsaInstance(2,2)
+        :m_wsaInstance(2,2)
     {
         m_descriptor = std::make_shared<SocketDescriptor>();
         *m_descriptor = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         if (*m_descriptor == INVALID_SOCKET)
         {
-            m_logger.error("Failed to create socket: {}", WSAGetLastError());
+            SFW_LOG_ERROR(DOM, "Failed to create socket: {}", WSAGetLastError());
             throw std::runtime_error("Failed to create socket");
         }
 
@@ -30,7 +30,7 @@ namespace iu
         Bind(address, port);
         if (listen((SOCKET)*m_descriptor, queueSize) == SOCKET_ERROR)
         {
-            m_logger.error("Failed to listen to socket {}: {}", (SOCKET)*m_descriptor, WSAGetLastError());
+            SFW_LOG_ERROR(DOM, "Failed to listen to socket {}: {}", (SOCKET)*m_descriptor, WSAGetLastError());
         }
     }
 
@@ -42,7 +42,7 @@ namespace iu
         
         if( *connection == INVALID_SOCKET)
         {
-            m_logger.error("Failed to accept: {}", WSAGetLastError());
+            SFW_LOG_ERROR(DOM, "Failed to accept: {}", WSAGetLastError());
             exit(1);
         }
         return Connection(connection, connDetails);
@@ -55,10 +55,9 @@ namespace iu
         fds.events = POLLRDNORM;
 
         const int result = WSAPoll(&fds, 1, 0);
-        std::cout << "Result " << result << "\n";
-        if (result == 0 || result == SOCKET_ERROR)
+        if (result == SOCKET_ERROR)
         {
-        std::cout << WSAGetLastError() << '\n';
+            SFW_LOG_ERROR(DOM, "Pool failed: {}", WSAGetLastError());
             return false;
         }
         
@@ -96,8 +95,7 @@ namespace iu
 
         if (bind((SOCKET)*m_descriptor, results->ai_addr, results->ai_addrlen) == SOCKET_ERROR)
         {
-            //m_logger.info("Failed to bind socket", WSAGetLastError());
-            std::cout << "FAiled to bind:" << WSAGetLastError();
+            SFW_LOG_ERROR(DOM, "Failed to bind socket", WSAGetLastError());
         }
 
         freeaddrinfo(results);
