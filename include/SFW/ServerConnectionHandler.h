@@ -3,7 +3,6 @@
 #include <atomic>
 
 #include "Connection.h"
-#include "Logger.h"
 namespace iu
 {
     class SFW_API ServerConnectionHandler
@@ -26,7 +25,6 @@ namespace iu
         void Stop()override;
     private:
         std::atomic_bool m_stop;
-        Logger m_logger;
     };
 }
 

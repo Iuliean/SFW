@@ -1,5 +1,4 @@
 #include "LoggerManager.h"
-#include "Logger.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/daily_file_sink.h"
@@ -9,20 +8,17 @@
 #include "utils.h"
 #include <memory>
 #include <mutex>
+#include <string_view>
 
 static constexpr auto LOG_FORMAT = "[%d/%m/%Y %T.%e][%t][%n][%^%l%$]: %v";
 
 namespace iu
 {
-    std::unique_ptr<Logger> LoggerManager::s_globalScopeLogger;
     std::vector<spdlog::sink_ptr> LoggerManager::s_sinks;
 
-    void LoggerManager::Init()
+    void LoggerManager::LogToConsole()
     {
         s_sinks.push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
-        auto logger = std::make_shared<spdlog::logger>("Core", s_sinks.begin(), s_sinks.end());
-        spdlog::set_default_logger(logger);
-        s_globalScopeLogger = std::make_unique<Logger>(std::move(logger));
     }
 
     void LoggerManager::SetLevel(LogLevel level)
@@ -46,7 +42,7 @@ namespace iu
         s_sinks.push_back(std::move(sink));
     }
 
-    Logger LoggerManager::GetLogger(const std::string& name)
+    std::shared_ptr<LoggerManager::Logger> LoggerManager::GetLogger(const std::string& name)
     {
         if(spdlog::get(name) == nullptr)
         {
@@ -54,17 +50,11 @@ namespace iu
             logger->set_pattern(LOG_FORMAT);
             logger->set_level(s_sinks[0]->level());
             spdlog::register_logger(logger);
-            return Logger(logger);
+            return logger;
         }
         else
         {
-            return Logger(spdlog::get(name));
+            return spdlog::get(name);
         }
-    }
-
-    Logger& LoggerManager::GlobalLogger()
-    {
-        ASSERT(s_globalScopeLogger != nullptr, "Global Logger not initialized please use LoggerManager::Init()");
-        return *s_globalScopeLogger.get();
     }
 }

@@ -4,12 +4,11 @@
 #include <netinet/in.h>
 #include <sys/epoll.h>
 
-#include "Logger.h"
-#include "Connection.h"
 #include "SocketDescriptor.h"
 
 namespace iu
 {
+    class Connection;
     class Socket
     {
     public:
@@ -31,8 +30,6 @@ namespace iu
         socklen_t m_addressLength;
         epoll_inst m_epoll;
         epoll_event m_epollEvent;
-
-        Logger m_logger;
     };
 }
 

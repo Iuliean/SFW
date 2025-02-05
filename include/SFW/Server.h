@@ -8,7 +8,6 @@
 #include <set>
 #include <mutex>
 
-#include "Logger.h"
 #include "ServerConnectionHandler.h"
 #include "Connection.h"
 #include "ThreadPool.h"
@@ -46,7 +45,6 @@ namespace iu
     private:
         virtual void Execute(Connection&&) = 0;
     protected:
-        Logger m_logger;
         size_t m_maxConnections;
         std::mutex m_mutexMaxConnections;
         std::condition_variable m_cvMaxConnection;

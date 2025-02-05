@@ -7,6 +7,8 @@
 
 namespace iu
 {
+    constexpr auto DOM = "SocketDescriptor";
+
     SocketDescriptor::SocketDescriptor() noexcept
         : m_descriptor(INVALID_SOCKET){}
     
@@ -32,7 +34,7 @@ namespace iu
         {
             if (closesocket(m_descriptor) == SOCKET_ERROR)
             {
-                LoggerManager::GlobalLogger().error("Failed to close socket {}: {}", m_descriptor, WSAGetLastError());
+                SFW_LOG_ERROR(DOM, "Failed to close socket {}: {}", m_descriptor, WSAGetLastError());
             } 
         }
     }
@@ -63,7 +65,7 @@ namespace iu
         int out = recv(m_descriptor, (char*)buffer.data(), buffer.size(), 0); 
         if (out == SOCKET_ERROR)
         {
-            LoggerManager::GlobalLogger().error("Failed to receive data on descriptor: {}", WSAGetLastError());
+            SFW_LOG_ERROR(DOM, "Failed to receive data on descriptor: {}", WSAGetLastError());
             return 0;
         }
         return out;
@@ -75,7 +77,7 @@ namespace iu
         int out = send(m_descriptor, (char*)buffer.data(), buffer.size(), 0);
         if (out == SOCKET_ERROR)
         {
-            LoggerManager::GlobalLogger().error("Failed to transmit data on descriptor: {}", WSAGetLastError());
+            SFW_LOG_ERROR(DOM, "Failed to transmit data on descriptor: {}", WSAGetLastError());
             return 0;
         }
         return out;

@@ -9,8 +9,8 @@
 
 namespace iu
 {
+    constexpr auto DOM = "TheadPool";
     ThreadPool::ThreadPool(size_t maxThreads, const std::string& name)
-        :m_logger(LoggerManager::GetLogger("ThreadPool"))
     {
         m_threads.reserve(maxThreads);
         m_stop = false;
@@ -42,14 +42,14 @@ namespace iu
 
             ul.unlock();
             try{
-                m_logger.debug("Starting Task");
+                SFW_LOG_DEBUG(DOM, "Starting Task");
                 (*fn)();
-                m_logger.debug("Task Stopped");
+                SFW_LOG_DEBUG(DOM, "Task Stopped");
             }
             catch(...)
             {
-                m_logger.debug("Task Stopped");
-                m_logger.error("Exception thrown by task!!!!");
+                SFW_LOG_DEBUG(DOM, "Task Stopped");
+                SFW_LOG_ERROR(DOM, "Exception thrown by task!!!!");
             }
         }
     }

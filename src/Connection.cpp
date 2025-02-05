@@ -8,8 +8,7 @@
 namespace iu
 {
     Connection::Connection(std::shared_ptr<SocketDescriptor> descriptor, sockaddr_in& details)
-        : m_descriptor(descriptor),
-          m_logger(LoggerManager::GetLogger("Connection"))
+        : m_descriptor(descriptor)
     {
         ParseSockDetails(details);
 

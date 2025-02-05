@@ -2,14 +2,13 @@
 #define CONNECTION_H
 #include <array>
 #include <memory>
+#include <span>
 #include <vector>
 #include <cstdint>
 #include <string.h>
 
-#include "platform/win32/Socket.h"
-#include "platform/win32/SocketDescriptor.h"
+#include "Socket.h"
 #include "utils.h"
-#include "Logger.h"
 #include "Serializer.h"
 #include "SocketDescriptor.h"
 
@@ -77,7 +76,6 @@ namespace iu
     private:
         void ParseSockDetails(sockaddr_in& details);
     private:
-        Logger m_logger;
         std::string m_address;
         std::uint16_t m_port;
         std::shared_ptr<SocketDescriptor> m_descriptor;

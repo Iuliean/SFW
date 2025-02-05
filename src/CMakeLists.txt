@@ -1,6 +1,5 @@
 
 set(SFW_SRC_FILES "Connection.cpp"
-                  "Logger.cpp"
                   "LoggerManager.cpp"
                   "Server.cpp"
                   "ServerConnectionHandler.cpp"
