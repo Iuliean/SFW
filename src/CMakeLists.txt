@@ -16,6 +16,7 @@ else()
     set(SFW_SRC_FILES "${SFW_SRC_FILES}"
                       "platform/posix/Socket.cpp"
                       "platform/posix/SocketDescriptor.cpp")
+    set(LINK_LIBS "pthread")
 endif()
 
 
@@ -40,8 +41,8 @@ if (WIN32)
     target_link_libraries(${PROJECT_NAME}-test
         PRIVATE ${PROJECT_NAME})
 else()
-    target_link_libraries(${PROJECT_NAME} PRIVATE )
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${LINK_LIBS})
     
     target_link_libraries(${PROJECT_NAME}-test
-        PRIVATE ${PROJECT_NAME})
+        PRIVATE ${PROJECT_NAME} ${LINK_LIBS})
 endif()

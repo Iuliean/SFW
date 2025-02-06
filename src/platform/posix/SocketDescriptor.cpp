@@ -5,22 +5,30 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include "SocketDescriptor.h"
+#include "platform/posix/SocketDescriptor.h"
 #include "utils.h"
 #include "LoggerManager.h"
 namespace iu
 {
     constexpr auto DOM = "SocketDescriptor";
-    SocketDescriptor::SocketDescriptor(int32_t descriptor)
+    SocketDescriptor::SocketDescriptor(int32_t descriptor)noexcept
     {
         m_socketDescriptor = descriptor;
     }
-    SocketDescriptor::SocketDescriptor()
+    SocketDescriptor::SocketDescriptor()noexcept
         :m_socketDescriptor(-1){}
     
-    SocketDescriptor::SocketDescriptor(SocketDescriptor&& other)
+    SocketDescriptor::SocketDescriptor(SocketDescriptor&& other)noexcept
     {
         m_socketDescriptor = other.m_socketDescriptor;
         other.m_socketDescriptor = -1;
+    }
+
+    SocketDescriptor& SocketDescriptor::operator=(SocketDescriptor&& other)noexcept
+    {
+        m_socketDescriptor = other.m_socketDescriptor;
+        other.m_socketDescriptor = -1;
+        return *this;
     }
 
     SocketDescriptor::~SocketDescriptor()
@@ -42,24 +50,33 @@ namespace iu
         }
     }
 
-    void SocketDescriptor::operator=(int32_t descriptor)
+    SocketDescriptor::operator bool()const noexcept
     {
-        ASSERT(m_socketDescriptor < 0, "Socket already assigned");
-        m_socketDescriptor = descriptor;
+        return m_socketDescriptor > -1;
     }
 
-    bool SocketDescriptor::operator==(const SocketDescriptor& descriptor)const
+    bool SocketDescriptor::operator==(const SocketDescriptor& descriptor)const noexcept
     {
         return descriptor.m_socketDescriptor == m_socketDescriptor;
     }
-    bool SocketDescriptor::operator==(int32_t descriptor)const
+    bool SocketDescriptor::operator==(int32_t descriptor)const noexcept
     {
         return m_socketDescriptor == descriptor;
     }
 
-    SocketDescriptor::operator int()
+    SocketDescriptor::operator int()const noexcept
     {
         return m_socketDescriptor;
+    }
+
+    size_t SocketDescriptor::Send(std::span<const std::uint8_t> data) const
+    {
+        return send(m_socketDescriptor, (void*)data.data(), data.size(), 0);
+    }
+
+    size_t SocketDescriptor::Receive(std::span<std::uint8_t> data)const
+    {
+        return recv(m_socketDescriptor, (void*)data.data(), data.size(), 0);
     }
 
 }

@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <cstdint>
+#include <arpa/inet.h>
 
 #include "Connection.h"
 #include "LoggerManager.h"

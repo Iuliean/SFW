@@ -1,5 +1,6 @@
 #include <arpa/inet.h>
 #include <cmath>
+#include <cstdint>
 #include <cstdlib>
 #include <memory>
 #include <netinet/in.h>
@@ -10,9 +11,9 @@
 
 #include "LoggerManager.h"
 #include "Socket.h"
-#include "spdlog/fmt/bundled/core.h"
+#include "platform/posix/SocketDescriptor.h"
 #include "utils.h"
-
+#include <Connection.h>
 namespace iu
 {
     constexpr auto DOM = "Socket";
@@ -70,7 +71,7 @@ namespace iu
             SFW_LOG_ERROR(DOM, "Failed to accept: {}", utils::getErrorFromErrno());
             exit(1);
         }
-        return {connection, connDetails};
+        return {std::make_shared<SocketDescriptor>(connection), connDetails};
     }
 
     bool Socket::Poll(int timeout)
@@ -100,7 +101,7 @@ namespace iu
             exit(1); 
         }
 
-        return {SD, sockAddr};
+        return {std::make_shared<SocketDescriptor>(SD), sockAddr};
     }
     
     void Socket::Bind(const std::string& address, uint16_t port)
