@@ -14,6 +14,8 @@ if (WIN32)
                       "platform/win32/Socket.cpp"
                       "platform/win32/SocketDescriptor.cpp"
                       "platform/win32/WinSockInstance.cpp")
+    set(LINK_LIBS "${SFW_SHARED_LINKS}"
+                  "ws2_32")
 else()
     set(SFW_SRC_FILES "${SFW_SRC_FILES}"
                       "platform/posix/Socket.cpp"
