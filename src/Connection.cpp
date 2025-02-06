@@ -1,6 +1,8 @@
 #include <cstddef>
 #include <cstdint>
-#include <arpa/inet.h>
+#ifndef _WIN32
+    #include <arpa/inet.h>
+#endif
 
 #include "Connection.h"
 #include "LoggerManager.h"
@@ -19,6 +21,7 @@ namespace iu
     void Connection::ParseSockDetails(sockaddr_in& details)
     {
         //not thread safe
+        //this is also deprecated on windows needs chages
         char* asString = inet_ntoa(details.sin_addr);
 
         m_address = asString;
