@@ -33,3 +33,5 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE     ${PROJECT_SOURCE_DIR}/include/SFW)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LINK_LIBS})
+
+install(TARGETS ${PROJECT_NAME})
