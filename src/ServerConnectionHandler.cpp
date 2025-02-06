@@ -1,22 +1,20 @@
 #include <array>
-#include <bits/stdint-uintn.h>
 #include <vector>
 
 #include "LoggerManager.h"
 #include "ServerConnectionHandler.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
 
 namespace iu
 {
+    constexpr auto DOM = "DefaultConnectionHandler";
     DefaultConnectionHandler::DefaultConnectionHandler()
-        : ServerConnectionHandler(),
-        m_logger(LoggerManager::GetLogger("DefaultConectionHandler"))
+        : ServerConnectionHandler()
     {
     }
 
     void DefaultConnectionHandler::OnConnected(Connection &connection)
     {
-        m_logger.info("Connected to {}:{}", connection.GetAdress(), connection.GetPort());
+        SFW_LOG_INFO(DOM, "Connected to {}:{}", connection.GetAdress(), connection.GetPort());
     }
 
     void DefaultConnectionHandler::HandleConnection(Connection& connection)

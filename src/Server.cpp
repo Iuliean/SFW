@@ -1,5 +1,4 @@
 #include "Server.h"
-#include <bits/stdint-uintn.h>
 #include <cstdlib>
 #include <math.h>
 #include <mutex>
@@ -13,14 +12,14 @@ namespace iu
     using epoll_inst = int;
 
     Server::Server(const std::string& address, uint16_t port, size_t maxConnections, const std::string& name)
-        : m_logger(LoggerManager::GetLogger("Server")),
-        m_maxConnections(maxConnections),  
+        :m_maxConnections(maxConnections),  
         m_stop(false),
         m_port(port),
         m_address(address),
         m_socket(),
         m_threadPool(30)
     {
+        
     }
 
     Server::~Server()

@@ -1,7 +1,6 @@
-#include <arpa/inet.h>
 #include <cstddef>
-#include <sys/socket.h>
-#include <netinet/in.h>
+#include <cstdint>
+#include <arpa/inet.h>
 
 #include "Connection.h"
 #include "LoggerManager.h"
@@ -9,25 +8,11 @@
 
 namespace iu
 {
-    Connection::Connection(int32_t descriptor, sockaddr_in& details)
-        : m_logger(LoggerManager::GetLogger("Connection"))
+    Connection::Connection(std::shared_ptr<SocketDescriptor> descriptor, sockaddr_in& details)
+        : m_descriptor(descriptor)
     {
-        m_descriptor = std::make_shared<SocketDescriptor>(descriptor);
         ParseSockDetails(details);
 
-    }
-    
-    size_t Connection::Send(const std::vector<uint8_t>& data, size_t count)const
-    {
-        ASSERT((int)*m_descriptor > -1, "Socket not valid")
-        ssize_t sent = send((int)*m_descriptor, data.data(), count, 0);
-        if(sent == -1)
-        {
-            m_logger.error("Failed to send data:{}", utils::getErrorFromErrno());
-            exit(1);
-        }
-
-        return sent;
     }
     //private
 

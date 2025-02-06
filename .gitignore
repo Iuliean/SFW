@@ -3,7 +3,8 @@ intermediate/*
 .cache
 compile_commands.json
 .vscode
-
+.vs
+out/
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles

@@ -1,7 +1,5 @@
 #ifndef CALLBACK_H
 #define CALLBACK_H
-#include <concepts>
-#include <type_traits>
 
 #include "Connection.h"
 namespace iu

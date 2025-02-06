@@ -1,15 +1,11 @@
 #ifndef SERVER_CONNECTION_HANDLER_H
 #define SERVER_CONNECTION_HANDLER_H
 #include <atomic>
-#include <memory>
-#include <thread>
-#include <chrono>
 
 #include "Connection.h"
-#include "Logger.h"
 namespace iu
 {
-    class ServerConnectionHandler
+    class SFW_API ServerConnectionHandler
     {
     public:
         ServerConnectionHandler() = default;
@@ -19,7 +15,7 @@ namespace iu
         virtual void Stop() = 0;
     };
 
-    class DefaultConnectionHandler : public ServerConnectionHandler
+    class SFW_API DefaultConnectionHandler : public ServerConnectionHandler
     {
     public:
         DefaultConnectionHandler();
@@ -29,7 +25,6 @@ namespace iu
         void Stop()override;
     private:
         std::atomic_bool m_stop;
-        Logger m_logger;
     };
 }
 

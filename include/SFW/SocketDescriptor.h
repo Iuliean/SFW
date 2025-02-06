@@ -1,26 +1,10 @@
-#ifndef SOCKETDESCRIPTOR_H
-#define SOCKETDESCRIPTOR_H
-#include "spdlog/common.h"
-#include "spdlog/logger.h"
-#include <cstdint>
-#include <memory>
+#ifndef SOCKET_DESCRIPTOR_H
+#define SOCKET_DESCRIPTOR_H
 
-namespace iu
-{
-    class SocketDescriptor
-    {
-    public:
-        SocketDescriptor();
-        SocketDescriptor(int32_t descriptor);
-        SocketDescriptor(SocketDescriptor& sd) = delete;
-        SocketDescriptor(SocketDescriptor&& other);
-        ~SocketDescriptor();
-        void operator=(int32_t descriptor);
-        bool operator==(const SocketDescriptor& descriptor)const;
-        bool operator==(int32_t descriptor)const;
-        explicit operator int();
-    private:
-        int32_t m_socketDescriptor;
-    };
-}
-#endif //SOCKETDESCRIPTOR_H
+#ifdef _WIN32
+    #include "platform/win32/SocketDescriptor.h" // IWYU pragma: export
+#else
+    #include "platform/posix/SocketDescriptor.h" // IWYU pragma: export
+#endif
+
+#endif //SOCKET_DESCRIPTOR_H
