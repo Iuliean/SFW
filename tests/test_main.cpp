@@ -1,21 +1,36 @@
 #define PY_SSIZE_T_CLEAN
-#include <cstddef>
 #include <gtest/gtest.h>
 #include <Python.h>
-#include <pythonrun.h>
+#include <Windows.h>
+#include <winbase.h>
+
+#include "python_utils.hpp"
 
 
 int main(int argc, char** argv)
 {
     Py_Initialize();
+    try
+    {
 
-    //PyRun_SimpleString("print(\"hello from python\")");
-    const auto fd= fopen("test.py","rb");
-    PyRun_SimpleFile(fd, "test.py");
-    testing::InitGoogleTest(&argc, argv);
-    const auto result = RUN_ALL_TESTS();
+        
+        sfw_test::PythonModule module("hello");
+        module.GetFunction("test_func")();
+        const auto cls = module.GetClassInstance("Check");
+        cls.CallMethod("method");
 
+        testing::InitGoogleTest(&argc, argv);
+        const auto result = RUN_ALL_TESTS();
+        
+        
+        return result;
+    }
+    catch(const std::exception& ex)
+    {
+        Py_FinalizeEx();
+        std::cerr << ex.what();
+        return -1;
+    }
     Py_FinalizeEx();
 
-    return result;
 }
