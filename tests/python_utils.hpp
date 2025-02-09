@@ -85,6 +85,8 @@ namespace sfw_test
     class PythonClassInstance
     {
     public:
+        PythonClassInstance() noexcept : m_class_obj() {}
+
         PythonClassInstance(PythonObject obj)
             :m_class_obj(obj)
         {
@@ -106,6 +108,8 @@ namespace sfw_test
     class PythonModule
     {
     public:
+        PythonModule() noexcept : m_object() {}
+
         PythonModule(std::string_view file_name)
         {
             PythonObject name = PyUnicode_DecodeFSDefault(file_name.data());
@@ -113,7 +117,7 @@ namespace sfw_test
             {
                 std::cerr << "Failed on PyUnicode_DecodeFSDefault\n";
                 PyErr_Print();
-                std::terminate();
+                throw std::runtime_error("Failed to decode string");
             }
 
             m_object = PyImport_Import(name);
@@ -122,7 +126,7 @@ namespace sfw_test
             {
                 std::cerr << "Failed to PyImport_Import\n";
                 PyErr_Print();
-                std::terminate();
+                throw std::runtime_error("Failed to import Python module");
             }
         }
 

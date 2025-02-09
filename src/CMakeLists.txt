@@ -29,7 +29,7 @@ add_library(${PROJECT_NAME} SHARED  ${SFW_SRC_FILES})
 
 
 
-target_compile_definitions(${PROJECT_NAME} PUBLIC ${SFW_PREPROCESSOR_DEFINES})
+target_compile_definitions(${PROJECT_NAME} PUBLIC ${SFW_PREPROCESSOR_DEFINES} PRIVATE SFW_EXPORT)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE     ${PROJECT_SOURCE_DIR}/include/SFW)
