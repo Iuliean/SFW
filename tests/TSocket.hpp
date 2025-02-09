@@ -51,7 +51,9 @@ namespace sfw_test
         s.Listen("127.0.0.1", 12345, 0);
 
         std::thread t([this, &s](){ const auto acc = s.Accept(); });
+        m_client_test_instance.CallMethod("ListenAccept");
         std::this_thread::sleep_for(std::chrono::seconds(2));
+
         ASSERT_TRUE(t.joinable());
     }
 }
