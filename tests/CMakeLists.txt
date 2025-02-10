@@ -3,7 +3,7 @@ enable_testing()
 find_package(Python COMPONENTS Development)
 
 set(SFW_UNIT_TEST "${PROJECT_NAME}_unit_test")
-set(SFW_TEST_SCRIPT_FILES "scripts/hello.py")
+set(SFW_TEST_SCRIPT_FILES "scripts/TSocket.py")
 add_executable(${SFW_UNIT_TEST}
     test_main.cpp
 )

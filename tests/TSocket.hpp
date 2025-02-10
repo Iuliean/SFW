@@ -4,7 +4,6 @@
 #include <gtest/gtest.h>
 #include <thread>
 
-#include "platform/win32/Socket.h"
 #include "python_utils.hpp"
 #include "Socket.h"
 #include "Connection.h"
@@ -18,7 +17,6 @@ namespace sfw_test
         {
             try
             {
-                std::cout << "Lol\n";
                 m_python_test_module = PythonModule("TSocket");
                 m_client_test_instance = m_python_test_module.GetClassInstance("TSocket");
             }
@@ -46,15 +44,28 @@ namespace sfw_test
     
     TEST_F(TSocket, ListenAccept)
     {
+        std::atomic_bool has_accepted = false;
+        std::atomic_bool stop = false;
         iu::Socket s;
-
         s.Listen("127.0.0.1", 12345, 0);
 
-        std::thread t([this, &s](){ const auto acc = s.Accept(); });
-        m_client_test_instance.CallMethod("ListenAccept");
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+        std::thread t([this, &s, &has_accepted, &stop](){
+            while (!stop)
+            {
+                if (s.Poll())
+                {
+                    const auto acc = s.Accept();
+                    has_accepted = true;
+                    break;
+                }
+            }
+            });
 
-        ASSERT_TRUE(t.joinable());
+        m_client_test_instance.CallMethod("ListenAccept");
+        stop = true;
+        t.join();
+
+        EXPECT_TRUE(has_accepted);
     }
 }
     

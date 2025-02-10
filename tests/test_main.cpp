@@ -1,13 +1,13 @@
 #define PY_SSIZE_T_CLEAN
 #include <gtest/gtest.h>
 #include <Python.h>
-#include <iostream>
 
+#include "LoggerManager.h"
 #include "python_utils.hpp"
 #include "TSocket.hpp"
-
 int main(int argc, char** argv)
 {
+    iu::LoggerManager::LogToConsole();    
     Py_Initialize();
     try
     {
