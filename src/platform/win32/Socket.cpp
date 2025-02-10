@@ -86,16 +86,24 @@ namespace iu
         addrinfo hints;
         addrinfo* results;
 
+        memset(&hints, 0, sizeof(hints));
         hints.ai_family = AF_INET;
         hints.ai_socktype = SOCK_STREAM;
         hints.ai_protocol = IPPROTO_TCP;
         hints.ai_flags = AI_PASSIVE;
-
-        getaddrinfo(address.c_str(), std::to_string(port).c_str(), &hints, &results);
+        const int result = getaddrinfo(address.c_str(), std::to_string(port).c_str(), &hints, &results);
+        
+        if(result || results == NULL)
+        {
+            SFW_LOG_ERROR(DOM, "Failed to get addrinfo of {}:{} -> error: {}", address, port, result);
+            throw std::runtime_error(std::format("Failed to getaddrinfo: {}", result));
+        }
 
         if (bind((SOCKET)*m_descriptor, results->ai_addr, results->ai_addrlen) == SOCKET_ERROR)
         {
-            SFW_LOG_ERROR(DOM, "Failed to bind socket", WSAGetLastError());
+            SFW_LOG_ERROR(DOM, "Failed to bind socket:{}", WSAGetLastError());
+            freeaddrinfo(results);
+            throw std::runtime_error("Failed to bind socket");
         }
 
         freeaddrinfo(results);
