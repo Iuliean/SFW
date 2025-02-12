@@ -15,7 +15,6 @@ namespace sfw_test
     {
     protected:
         TSocket()
-            : m_dist(1,10)
         {
             try
             {
