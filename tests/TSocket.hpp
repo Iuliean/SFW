@@ -46,6 +46,8 @@ namespace sfw_test
     TEST_F(TSocket, PollTest)
     {
         using namespace std::chrono_literals;
+        const std::string address = "127.0.0.1";
+        const int port = 12345;
         std::atomic_bool stop = false;
         std::atomic_bool poll_result = false;
 
@@ -54,7 +56,7 @@ namespace sfw_test
         */
         {
             iu::Socket s;
-            s.Listen("127.0.0.1", 12345, 0);
+            s.Listen(address, port, 0);
             
             std::thread t ([&s, &stop, &poll_result]
             {
@@ -65,7 +67,7 @@ namespace sfw_test
                 }
             });
                 
-            m_client_test_instance.CallMethod("PollConnect");
+            m_client_test_instance.CallMethod("PollConnect", address.c_str(), port);
             stop = true;
             t.join();
             
@@ -77,7 +79,7 @@ namespace sfw_test
         */
         {
             iu::Socket s;
-            s.Listen("127.0.0.1", 12345, 0);
+            s.Listen(address, port, 0);
             stop = false;
 
             std::thread t([&]()
@@ -97,7 +99,8 @@ namespace sfw_test
         //The next few tests check the timout of the Poll method
         {
             iu::Socket s;
-            s.Listen("127.0.0.1", 12345, 0);
+            s.Listen(address, port, 0);
+
             std::thread t([&]()
             {
                 // TODO: change the interface to accept std::duration for now it is milliseconds
@@ -105,13 +108,14 @@ namespace sfw_test
             });
 
             std::this_thread::sleep_for(1s);
-            m_client_test_instance.CallMethod("PollConnect");
+            m_client_test_instance.CallMethod("PollConnect", address.c_str(), port);
             t.join();
         }
 
         {
             iu::Socket s;
-            s.Listen("127.0.0.1", 12345, 0);
+            s.Listen(address, port, 0);
+
             std::thread t([&]()
             {
                 // TODO: change the interface to accept std::duration for now it is milliseconds
@@ -119,17 +123,37 @@ namespace sfw_test
             });
 
             std::this_thread::sleep_for(2s);
-            m_client_test_instance.CallMethod("PollConnect");
+            m_client_test_instance.CallMethod("PollConnect", address.c_str(), port);
             t.join();
         }
     }
 
+    TEST_F(TSocket, AcceptQueue)
+    {
+        const std::string address = "127.0.0.1";
+        const int port = 12345;
+        const int maxConnections = 10;
+
+        iu::Socket s;
+        s.Listen(address, port, maxConnections);
+        
+        //returns > 0 if connections after maxConnections are refused automatically
+        //returns 0 if connections not refused after maxConnections
+        const auto result = m_client_test_instance.CallMethod("AcceptQueue", address.c_str(), port, maxConnections);
+
+        EXPECT_TRUE(result.has_value());
+        EXPECT_TRUE(result.value());
+    }
+
     TEST_F(TSocket, ListenAccept)
     {
+        const std::string address = "127.0.0.1";
+        const int port = 12345;
+
         std::atomic_bool has_accepted = false;
         std::atomic_bool stop = false;
         iu::Socket s;
-        s.Listen("127.0.0.1", 12345, 0);
+        s.Listen(address, port, 0);
 
         std::thread t([this, &s, &has_accepted, &stop](){
             while (!stop)
@@ -143,7 +167,7 @@ namespace sfw_test
             }
             });
 
-        m_client_test_instance.CallMethod("ListenAccept");
+        m_client_test_instance.CallMethod("ListenAccept", address.c_str(), port);
         stop = true;
         t.join();
 

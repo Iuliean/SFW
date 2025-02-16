@@ -1,13 +1,45 @@
 #ifndef PYTHON_UTILS_HPP
 #define PYTHON_UTILS_HPP
+#include <longobject.h>
 #include <string_view>
 #include <iostream>
 #include <stdexcept>
+#include <optional>
 
 #include <Python.h>
+#include <type_traits>
 
 namespace sfw_test
 {
+    class VariableString
+    {
+    public:
+        VariableString() = default;
+    
+        template<typename T>
+        void Append();
+    
+        template<typename T>
+        void Append() requires (std::is_arithmetic_v<
+                                        std::remove_cv_t<
+                                            std::remove_pointer_t<std::remove_reference_t<T>>
+                                        >
+                                > && !std::same_as<T, const char*>)
+        {
+            str += "i";
+        }
+    
+        const std::string& string() const noexcept { return str; }
+    private:
+        std::string str;
+    };
+    
+    template<>
+    void VariableString::Append<const char*>()
+    {
+        str += "s";
+    }
+    
     class PythonObject
     {
     public:
@@ -92,17 +124,26 @@ namespace sfw_test
         {
         }
 
-        void CallMethod(std::string_view method)const
+        template<typename ...Args>
+        std::optional<long> CallMethod(std::string_view method, Args&&... args)const
         {
-            PythonObject result = PyObject_CallMethod(m_class_obj, method.data(), "");
+            VariableString str;
+            (str.Append<std::decay_t<Args>>(), ...);
+            std::cout << str.string() << "\n";
+            const char* format = str.string().c_str();
+            PythonObject result = PyObject_CallMethod(m_class_obj, method.data(), format ? format : nullptr, args...);
+
             if(!result)
             {
                 PyErr_Print();
                 throw std::runtime_error("Failed to call method");
             }
+
+            return PyLong_Check(result) ? PyLong_AsLong(result) : std::optional<long>{};
         }
     private:
         PythonObject m_class_obj;
+
     };
 
     class PythonModule
@@ -157,6 +198,7 @@ namespace sfw_test
     private:
         PythonObject m_object;
     };
+
 }
 
 #endif //PYTHON_UTILS_HPP
