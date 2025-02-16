@@ -4,10 +4,13 @@ find_package(Python COMPONENTS Development)
 
 set(SFW_UNIT_TEST "${PROJECT_NAME}_unit_test")
 set(SFW_TEST_SCRIPT_FILES "scripts/TSocket.py")
+set(SFW_TEST_LINK_LIBS "")
 
-if(_WIN32)
+if(WIN32)
+    set(SFW_TEST_LINK_LIBS "${SFW_TEST_LINK_LIBS}")
 else()
-    set(SFW_TEST_LINK_LIBS "expat"
+    set(SFW_TEST_LINK_LIBS "${SFW_TEST_LINK_LIBS}"
+                           "expat"
                            "dl"
                            "util"
                            "z"
