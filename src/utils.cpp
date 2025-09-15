@@ -11,10 +11,10 @@ namespace iu
 //for now it can stay like this but this file may be a system dependant file
 #ifdef _WIN32
             strerror_s(err, 124);
-#else
-            strerror_r(errno, err, 124);
-#endif
             return err;
+#else
+            return strerror(errno);
+#endif
         }
     }
 }

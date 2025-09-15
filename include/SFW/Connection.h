@@ -32,7 +32,7 @@ namespace iu
             ASSERT(m_descriptor, "Socket not valid");
             return m_descriptor->Send(data.subspan(0, count));
         }
-        
+
         template<typename T, template<typename> typename SerializerT = Serializer>
         size_t Send(const std::vector<T>& objects) const requires Serializable<T, SerializerT>
         {

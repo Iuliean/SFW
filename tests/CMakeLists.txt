@@ -19,6 +19,9 @@ endif()
 
 add_executable(${SFW_UNIT_TEST}
     test_main.cpp
+    python_utils.cpp
+    TSocket.hpp
+    TConnection.hpp
 )
 
 target_compile_definitions(${SFW_UNIT_TEST} PUBLIC ${SFW_PREPROCESSOR_DEFINES})

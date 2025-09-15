@@ -34,12 +34,19 @@ namespace iu
         m_descriptor  = std::make_shared<SocketDescriptor>();
         *m_descriptor = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0); 
         m_epoll = epoll_create1(0);
+        int sock_value = 1;
+
+        if (setsockopt((int)*m_descriptor, SOL_SOCKET, SO_REUSEADDR, &sock_value, 4) == -1)
+        {
+            SFW_LOG_ERROR(DOM, "Failed to set socket option: {}", utils::getErrorFromErrno());
+            exit(-1);
+        }
 
         if(m_epoll == -1)
         {
             SFW_LOG_ERROR(DOM, "Failed to create epoll instance: {}", utils::getErrorFromErrno());
             exit(1);
-        }    
+        }
 
         m_epollEvent.events = EPOLLIN;
         m_epollEvent.data.fd = (int)*m_descriptor;

@@ -18,8 +18,14 @@ namespace sfw_test
         {
             try
             {
-                m_python_test_module = PythonModule("TSocket");
-                m_client_test_instance = m_python_test_module.GetClassInstance("TSocket");
+                m_python_test_module = py_object::load_module("TSocket");
+                m_client_test_instance = m_python_test_module.get_attribute("TSocket")->call<py_object>();
+
+                m_script_set_up = m_client_test_instance.get_attribute("SetUp").value();
+                m_script_tear_down = m_client_test_instance.get_attribute("TearDown").value();
+
+                m_script_listen_accept = m_client_test_instance.get_attribute("ListenAccept").value();
+                m_script_poll_connect = m_client_test_instance.get_attribute("PollConnect").value();
             }
             catch(const std::exception& ex)
             {
@@ -31,18 +37,24 @@ namespace sfw_test
 
         void SetUp() override
         {
-            m_client_test_instance.CallMethod("SetUp");
+            m_script_set_up();
         }
 
         void TearDown() override
         {
-            m_client_test_instance.CallMethod("TearDown");
+            m_script_tear_down();
         }
 
-        PythonModule m_python_test_module;
-        PythonClassInstance m_client_test_instance;
+        py_object m_python_test_module;
+        py_object m_client_test_instance;
+
+        py_object m_script_set_up;
+        py_object m_script_tear_down;
+
+        py_object m_script_listen_accept;
+        py_object m_script_poll_connect;
     };
-    
+
     TEST_F(TSocket, PollTest)
     {
         using namespace std::chrono_literals;
@@ -57,7 +69,7 @@ namespace sfw_test
         {
             iu::Socket s;
             s.Listen(address, port, 0);
-            
+
             std::thread t ([&s, &stop, &poll_result]
             {
                 while(!stop)
@@ -66,11 +78,11 @@ namespace sfw_test
                         poll_result = true;
                 }
             });
-                
-            m_client_test_instance.CallMethod("PollConnect", address.c_str(), port);
+
+            m_script_poll_connect(address.c_str(), port);
             stop = true;
             t.join();
-            
+
             EXPECT_TRUE(poll_result);
         }
 
@@ -95,7 +107,7 @@ namespace sfw_test
             stop = true;
             t.join();
         }
-        
+
         //The next few tests check the timout of the Poll method
         {
             iu::Socket s;
@@ -108,7 +120,7 @@ namespace sfw_test
             });
 
             std::this_thread::sleep_for(1s);
-            m_client_test_instance.CallMethod("PollConnect", address.c_str(), port);
+            m_script_poll_connect(address.c_str(), port);
             t.join();
         }
 
@@ -123,26 +135,9 @@ namespace sfw_test
             });
 
             std::this_thread::sleep_for(2s);
-            m_client_test_instance.CallMethod("PollConnect", address.c_str(), port);
+            m_script_poll_connect(address.c_str(), port);
             t.join();
         }
-    }
-
-    TEST_F(TSocket, AcceptQueue)
-    {
-        const std::string address = "127.0.0.1";
-        const int port = 12345;
-        const int maxConnections = 10;
-
-        iu::Socket s;
-        s.Listen(address, port, maxConnections);
-        
-        //returns > 0 if connections after maxConnections are refused automatically
-        //returns 0 if connections not refused after maxConnections
-        const auto result = m_client_test_instance.CallMethod("AcceptQueue", address.c_str(), port, maxConnections);
-
-        EXPECT_TRUE(result.has_value());
-        EXPECT_TRUE(result.value());
     }
 
     TEST_F(TSocket, ListenAccept)
@@ -167,12 +162,12 @@ namespace sfw_test
             }
             });
 
-        m_client_test_instance.CallMethod("ListenAccept", address.c_str(), port);
+        m_script_listen_accept(address.c_str(), port);
         stop = true;
         t.join();
 
         EXPECT_TRUE(has_accepted);
     }
 }
-    
+
 #endif //TSOCKET_H

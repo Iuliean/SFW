@@ -25,15 +25,13 @@ else()
 endif()
 
 
-add_library(${PROJECT_NAME} SHARED  ${SFW_SRC_FILES})
-
-
+add_library(${PROJECT_NAME} ${SFW_SRC_FILES})
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC ${SFW_PREPROCESSOR_DEFINES} PRIVATE SFW_EXPORT)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE     ${PROJECT_SOURCE_DIR}/include/SFW)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${LINK_LIBS})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LINK_LIBS} spdlog::spdlog)
 
 install(TARGETS ${PROJECT_NAME})

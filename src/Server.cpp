@@ -12,14 +12,14 @@ namespace iu
     using epoll_inst = int;
 
     Server::Server(const std::string& address, uint16_t port, size_t maxConnections, const std::string& name)
-        :m_maxConnections(maxConnections),  
+        :m_maxConnections(maxConnections),
         m_stop(false),
         m_port(port),
         m_address(address),
         m_socket(),
         m_threadPool(30)
     {
-        
+
     }
 
     Server::~Server()
@@ -30,7 +30,7 @@ namespace iu
     void Server::Run()
     {
         m_stop = false;
-        
+
         m_socket.Listen(m_address, m_port, m_maxConnections);
         Callback executor(&Server::Execute, this);
 
@@ -44,7 +44,7 @@ namespace iu
 
             if(m_stop.load())
                 return;
-            
+
             ul.unlock();
             if(m_socket.Poll(0))
             {
