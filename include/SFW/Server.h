@@ -31,13 +31,13 @@ namespace iu
          * @param maxConnections specifies the maximum amount of connections the server is allowed to handle (default: 40)
          */
         Server(const std::string& address, uint16_t port, size_t maxConnections = 40, const std::string& name= "Default");
-        
+
         Server(const Server&) = delete;
         Server(Server&&) = delete;
-        
+
         Server& operator=(const Server&)=delete;
         Server& operator=(Server&&)=delete;
-        
+
         virtual ~Server();
 
         void Run();

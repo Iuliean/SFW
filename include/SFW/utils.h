@@ -4,7 +4,7 @@
 #include <iostream>
 #define ASSERT(C,M) if(!(C)){std::cerr << M << ':'<<__FILE__<< ':' << __LINE__<< '\n'; assert(C);}
 
-#ifdef _WIN32
+#if defined(_WIN32) && defined(SHARED_LIB)
     #ifdef SFW_EXPORT
         #define SFW_API __declspec(dllexport)
     #endif
