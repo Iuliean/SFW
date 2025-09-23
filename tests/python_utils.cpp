@@ -5,6 +5,7 @@
 #include <pytypedefs.h>
 #include <string_view>
 #include <unicodeobject.h>
+#include <utility>
 
 namespace sfw_test
 {
@@ -96,6 +97,7 @@ namespace sfw_test
             case -1: throw_current_python_exception();
             default: assert(false);
         }
+        std::unreachable();
     }
 
     [[nodiscard]]
@@ -130,5 +132,6 @@ namespace sfw_test
             case -1: throw_current_python_exception();
             default: assert(false);
         }
+        std::unreachable();
     }
 }

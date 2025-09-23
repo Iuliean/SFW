@@ -24,8 +24,11 @@ else()
                   "pthread")
 endif()
 
-
-add_library(${PROJECT_NAME} ${SFW_SRC_FILES})
+if(SHARED_LIB)
+    add_library(${PROJECT_NAME} SHARED ${SFW_SRC_FILES})
+else()
+    add_library(${PROJECT_NAME} ${SFW_SRC_FILES})
+endif()
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC ${SFW_PREPROCESSOR_DEFINES} PRIVATE SFW_EXPORT)
 

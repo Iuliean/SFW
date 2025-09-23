@@ -5,6 +5,7 @@ project(SFW VERSION 0.1)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(SPDLOG_USE_STD_FORMAT ON)
+option(SHARED_LIB OFF)
 
 include(ExternalProject)
 include(FetchContent)
