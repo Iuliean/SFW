@@ -72,11 +72,14 @@ namespace sfw_test
         {
             m_server_socket.Listen(HOSTADDR.data(), HOSTPORT, 2);
 
-            std::thread([this]()
+            std::jthread accept_thread([this]()
             {
-                if (m_server_socket.Poll(10000))
-                    m_client_connection.emplace(m_server_socket.Accept());
-            }).detach();
+                    if (m_server_socket.Poll(10000))
+                        m_client_connection.emplace(m_server_socket.Accept());
+                    else
+                        SFW_LOG_ERROR("Test", "Failed to accept");
+            });
+
             std::this_thread::sleep_for(std::chrono::seconds(1));
             m_client_test_instance = m_python_test_module.get_attribute("TConnection")->call<py_object>(HOSTADDR.data(), HOSTPORT);
 

@@ -54,7 +54,7 @@ namespace iu
         fds.fd = (SOCKET)*m_descriptor;
         fds.events = POLLRDNORM;
 
-        const int result = WSAPoll(&fds, 1, 0);
+        const int result = WSAPoll(&fds, 1, timeout);
         if (result == SOCKET_ERROR)
         {
             SFW_LOG_ERROR(DOM, "Pool failed: {}", WSAGetLastError());
