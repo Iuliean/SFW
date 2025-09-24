@@ -48,7 +48,7 @@ namespace iu
             for(auto& obj : objects)
                 s.Serialize(send, obj);
 
-            return Send(send);
+            return Send(std::span<const std::uint8_t>{send.data(), send.size()});
         }
 
         template<typename T, template<typename> typename SerializerT = Serializer>
@@ -61,7 +61,7 @@ namespace iu
                 send.reserve(s.GetSize(object));
             }
             s.Serialize(send, object);
-            return Send(send);
+            return Send(std::span<const std::uint8_t>{send.data(), send.size()});
         }
 
         size_t Receive(std::span<std::uint8_t> data)const
